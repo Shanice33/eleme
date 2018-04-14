@@ -48,12 +48,6 @@ table {
 }
 
 /* custom */
-body,html{
-  line-height: 12px;
-  font-weight: 200;
-  font-family: 'PingFang SC','STHeitiSC-Light','Helvetica-Light',Arial,sans-serif;
-}
-
 a {
     color: #7e8c8d;
     text-decoration: none;

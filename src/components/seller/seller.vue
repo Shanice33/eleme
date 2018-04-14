@@ -1,6 +1,6 @@
 <template>
     <div>
-      i am seller
+      i am sell
     </div>
 </template>
 <script>

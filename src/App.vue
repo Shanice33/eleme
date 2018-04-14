@@ -12,7 +12,7 @@
         <router-link to="/seller" active-class="link">商家</router-link>
       </div>
     </div>
-    <router-view></router-view>
+    <router-view :seller="seller"></router-view>
   </div>
 </template>
 
@@ -30,7 +30,7 @@
     },
     created () {
       this.$http.get('/api/seller').then((res) => {
-        res = res.body;
+        res = res.data;
         if(!res.errCode){
           this.seller = res.data;
           console.log(this.seller);
@@ -40,31 +40,23 @@
   };
 </script>
 
-<style>
-  #app .tab{
-    display: flex;
-    width: 100%;
-    line-height: 40px;
-    position: relative;
-  }
-  #app .tab-item{
-    flex: 1;
-    text-align: center;
-  }
-  .tab-item a{
-    display: block;
-    font-size: 14px;
-    color: rgb(77, 85, 93)
-  }
-  .tab-item .link{
-    color: rgb(240, 20, 20);
-  }
-  .border-1px:after{
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    border-top: 1px solid rgba(7, 17, 27, 0.1);
-    content: ' '
-  }
+<style lang="stylus" type="text/stylus">
+  @import "./common/stylus/mixin.styl";
+
+  .tab
+    display: flex
+    width: 100%
+    height: 40px
+    line-height: 40px
+    border-1px(rgba(7, 17, 27, 0.1))
+    .tab-item
+      flex: 1
+      text-align: center
+      & > a
+        display: block
+        font-size: 14px
+        color: rgb(77, 85, 93)
+        &.link
+          color: rgb(240,20,20)
+
 </style>
