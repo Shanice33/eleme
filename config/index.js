@@ -55,8 +55,8 @@ module.exports = {
     /**
      * Source Maps
      */
-
-    productionSourceMap: true,
+    port: 9000,
+    productionSourceMap: false, //生产环境是否可以调试；
     // https://webpack.js.org/configuration/devtool/#production
     devtool: '#source-map',
 

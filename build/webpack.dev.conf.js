@@ -13,7 +13,7 @@ const portfinder = require('portfinder')
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
 
-//mock数据
+//开发环境下配置测试mock数据
 const express = require('express')
 const app = express()
 var appData = require('../data.json')

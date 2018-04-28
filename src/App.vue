@@ -12,28 +12,35 @@
         <router-link to="/seller" active-class="link">商家</router-link>
       </div>
     </div>
-    <router-view :seller="seller"></router-view>
+    <keep-alive>
+      <router-view :seller="seller"></router-view>
+    </keep-alive>
   </div>
 </template>
 
 <script>
   import header from '@/components/header/header.vue';
+  import {urlParse} from './common/js/util.js';
 
   export default {
     data () {
       return {
-        seller: {}
+        seller: {
+          id: (() => {
+            let queryParam = urlParse();
+            return queryParam.id;
+          })()
+        }
       };
     },
     components: {
       'v-head': header
     },
     created () {
-      this.$http.get('/api/seller').then((res) => {
+      this.$http.get('/api/seller?id='+this.seller.id).then((res) => {
         res = res.data;
         if(!res.errCode){
-          this.seller = res.data;
-          console.log(this.seller);
+          this.seller = Object.assign({},this.seller,res.data);
         }
       });
     }

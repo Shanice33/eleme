@@ -1,4 +1,5 @@
 <template>
+  <div>
     <div class="goods">
       <div class="menu-wrapper" ref="menuWrapper">
         <ul>
@@ -15,7 +16,7 @@
           <li v-for="item in goods" class="food-list" ref="foodList">
             <h1 class="title">{{item.name}}</h1>
             <ul>
-              <li v-for="food in item.foods" class="food-item border-1px">
+              <li v-for="food in item.foods" class="food-item" @click="selectFood(food, $event)">
                 <div class="icon">
                   <img :src="food.icon" width="57px">
                 </div>
@@ -29,7 +30,7 @@
                     <span class="new">￥{{food.price}}</span><span class="old" v-show="food.oldPrice">￥{{food.oldPrice}}</span>
                   </div>
                   <div class="cartControl-wrapper">
-                    <cart-control :food="food"></cart-control>
+                    <cart-control :food="food" @add="addFood"></cart-control>
                   </div>
                 </div>
               </li>
@@ -37,14 +38,17 @@
           </li>
         </ul>
       </div>
-      <shop-cart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shop-cart>
+      <shop-cart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice" ref="shopcart"></shop-cart>
     </div>
+    <food :food="selectedFood" ref="food" @add="addFood"></food>
+  </div>
 </template>
 <script>
   import BScroll from 'better-scroll';
   //BScroll库使用：new BScroll(DOM对象,options)
   import shopCart from '../shopCart/shopCart';
   import cartControl from '../cartControl/cartControl';
+  import food from '@/components/food/food';
 
   export default {
     props: {
@@ -53,15 +57,17 @@
       }
     },
     components: {
-       shopCart,
-      cartControl
+      shopCart,
+      cartControl,
+      food
     },
     data(){
       return {
         goods: [],
         classMap: ['decrease', 'discount', 'special', 'invoice', 'guarantee'],
         listHeight: [],
-        scrollY: 0
+        scrollY: 0,
+        selectedFood: {}
       };
     },
     methods: {
@@ -72,6 +78,19 @@
         }
         let el = this.$refs.foodList[index];
         this.foodsScroll.scrollToElement(el, 300);
+      },
+      selectFood(food, event){
+        if(!event._constructed){
+          return;
+        }
+        this.selectedFood = food;
+        this.$refs.food.show();
+      },
+      addFood(target) {
+        //体验优化，异步执行下落动画;
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(target); //触发shopCart组件的drop方法;
+        });
       },
       _initScroll() {
         this.menuScroll = new BScroll(this.$refs.menuWrapper,{click: true});//click事件默认被拦截了，click:true默认派发点击事件;
@@ -102,6 +121,17 @@
           }
         }
         return 0;
+      },
+      selectFoods() {
+        let foods = [];
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if(food.count){ //foods有count属性且其值大于0，说明早cartControl组件中有选中该商品;
+              foods.push(food);
+            }
+          });
+        });
+        return foods;
       }
     },
     created(){
